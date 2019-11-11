@@ -64,8 +64,8 @@ namespace Monsters
                 // get user menu choice
                 //
                 Console.WriteLine("a) List All Monsters");
-                Console.WriteLine("b) Add Monster");
-                Console.WriteLine("c) ");
+                Console.WriteLine("b) View Monster");
+                Console.WriteLine("c) Add Monster");
                 Console.WriteLine("d) ");
                 Console.WriteLine("e) ");
                 Console.WriteLine("f) ");
@@ -83,11 +83,11 @@ namespace Monsters
                         break;
 
                     case "b":
-                        DisplayAddMonster(monsters);
+                        DisplayViewMonster(monsters);
                         break;
 
                     case "c":
-
+                        DisplayAddMonster(monsters);
                         break;
 
                     case "d":
@@ -117,41 +117,95 @@ namespace Monsters
             } while (!quitApplication);
         }
 
+        static void DisplayViewMonster(List<Monster> monsters)
+        {
+            //
+            // display all monster names
+            //
+            DisplayScreenHeader("Monster Detail");
+            foreach (var monster in monsters)
+            {
+                Console.WriteLine($"\tSelect a monster: {monster.Name}");
+            }
+
+            //
+            // ask user for name to display
+            //
+            Console.Write("Which monster's information would you like to display?: ");
+            string userResponse = Console.ReadLine();
+
+            DisplayContinuePrompt();
+
+            //
+            // find monster with that name
+            //
+            Monster selectedMonster = monsters.Find(a => a.Name.Contains(userResponse));          // same as the foreach below
+            
+            /*
+            Monster selectedMonster = null;
+            foreach (Monster monster in monsters)
+            {
+                if (monster.Name == userResponse)
+                {
+                    selectedMonster = monster;
+                    break;
+                }
+            } 
+            */
+
+            //
+            // display monster's details
+            //
+            DisplayScreenHeader($"{selectedMonster.Name} Monster Details");
+            MonsterInfo(selectedMonster);
+
+            DisplayContinuePrompt();
+        }
+
         static void DisplayAddMonster(List<Monster> monsters)
         {
             Monster newMonster = new Monster();
 
             DisplayScreenHeader("Add Monster");
 
-            Console.Write("Name: ");
+            Console.Write("\tName: ");
             newMonster.Name = Console.ReadLine();
 
-            Console.Write("Age: ");
+            Console.Write("\tAge: ");
             int.TryParse(Console.ReadLine(), out int age);
             newMonster.Age = age;
 
-            Console.Write("Attitude: ");
+            Console.Write("\tAttitude: ");
             Enum.TryParse(Console.ReadLine(), out Monster.EmotionalState attitude);
             newMonster.Attitude = attitude;
 
             //
             // echo monster properties
             //
-
+            Console.WriteLine();
+            Console.WriteLine("\tMonster Properties");
+            Console.WriteLine("*********************");
+            MonsterInfo(newMonster);
 
             DisplayContinuePrompt();
 
             monsters.Add(newMonster);
         }
+
+        static void MonsterInfo(Monster monster)
+        {
+                Console.WriteLine($"\tName: {monster.Name}");
+                Console.WriteLine($"\tAge: {monster.Age}");
+                Console.WriteLine($"\tAttitude: {monster.Attitude}");
+        }
+
         static void DisplayAllMonsters(List<Monster> monsters)
         {
             DisplayScreenHeader("All Monsters");
             Console.WriteLine("***************************************");
             foreach (Monster monster in monsters)
             {
-                Console.WriteLine($"\tName: {monster.Name}");
-                Console.WriteLine($"\tAge: {monster.Age}");
-                Console.WriteLine($"\tAttitude: {monster.Attitude}");
+                MonsterInfo(monster);
                 Console.WriteLine();
                 Console.WriteLine("***************************************");
             }
