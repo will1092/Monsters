@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace Monsters
 {
@@ -19,36 +20,142 @@ namespace Monsters
     {
         static void Main(string[] args)
         {
-            List<Monster> monsters = new List<Monster>();
+            //
+            // initialize monster list from seed data
+            //
+            //List<Monster> monsters = InitializeMonsterList();
 
             //
-            // create (instantiate) monsters
+            // read data from file inot list
             //
-            Monster sid = new Monster();
-            Monster lucy = new Monster();
-
-            //
-            // set monster property values
-            //
-            sid.Name = "Sid";
-            sid.Age = 150;
-            sid.Attitude = Monster.EmotionalState.happy;
-
-            lucy.Name = "Lucy";
-            lucy.Age = 132;
-            lucy.Attitude = Monster.EmotionalState.bored;
-
-            //
-            // add monsters to the list
-            //
-            monsters.Add(sid);
-            monsters.Add(lucy);
+            List<Monster> monsters = ReadFromDataFile();
 
             //
             // call methods
             //
             DisplayMenuScreen(monsters);
 
+        }
+
+        static List<Monster> InitializeMonsterList()
+        {
+            //List<int> myInts = new List<int>();
+            //myInts.Add(3);
+            //myInts.Add(22);
+
+            //List<int> yourInts = new List<int>()
+            //{
+            //    3,
+            //    22
+            //};
+
+            //Monster myMonster = new Monster();
+            //myMonster.Name = "John";
+            //myMonster.Age = 44;
+            //myMonster.Attitude = Monster.EmotionalState.angry;
+
+            //Monster yourMonster = new Monster()
+            //{
+            //    Name = "John",
+            //    Age = 44,
+            //    Attitude = Monster.EmotionalState.angry
+            //};
+
+            //
+            // create a list of monsters
+            //
+            List<Monster> monsters = new List<Monster>()
+            {
+
+                new Monster()
+                {
+                    Name = "Sid",
+                    Age = 145,
+                    Attitude = Monster.EmotionalState.happy
+                },
+
+                new Monster()
+                {
+                    Name = "Lucy",
+                    Age = 125,
+                    Attitude = Monster.EmotionalState.bored
+                },
+
+                new Monster("Bill", 999, Monster.EmotionalState.bored)
+
+            };
+
+            Console.WriteLine(monsters[0]);
+
+            return monsters;
+        }
+
+        static void WriteToDataFile(List<Monster> monsters)
+        {
+            string[] monsterStrings = new string[monsters.Count];
+
+            //
+            // create the array of monster strings
+            //
+            for (int index = 0; index < monsters.Count; index++)
+            {
+                //
+                // create monster string
+                //
+                string monsterString =
+                    monsters[index].Name + "," +
+                    monsters[index].Age + "," +
+                    monsters[index].Attitude;
+
+                //
+                // add monster string to array
+                //
+                monsterStrings[index] = monsterString;
+            }
+
+            //
+            // write array to data file
+            //
+            File.WriteAllLines("Data\\Data.txt", monsterStrings);
+
+        }
+
+        static List<Monster> ReadFromDataFile()
+        {
+            List<Monster> monsters = new List<Monster>();
+
+            //
+            // read from data file into an array
+            //
+            string[] monsterStrings = File.ReadAllLines("Data\\Data.txt");
+
+            foreach (string monster in monsterStrings)
+            {
+                //
+                // get monster property value
+                //
+                string[] monsterProperties = monster.Split(',');
+
+                //
+                // create a new monster with the property values
+                //
+                Monster newMonster = new Monster();
+
+                newMonster.Name = (monsterProperties[0]);
+
+                int.TryParse(monsterProperties[1], out int age);
+                newMonster.Age = age;
+
+                Enum.TryParse(monsterProperties[2], out Monster.EmotionalState attitude);
+                newMonster.Attitude = attitude;
+
+                //
+                // add new monster to list
+                //
+                monsters.Add(newMonster);
+            }
+
+            return monsters;
         }
 
         static void DisplayMenuScreen(List<Monster> monsters)
@@ -64,11 +171,11 @@ namespace Monsters
                 // get user menu choice
                 //
                 Console.WriteLine("a) List All Monsters");
-                Console.WriteLine("b) View Monster");
+                Console.WriteLine("b) View Monster Detail");
                 Console.WriteLine("c) Add Monster");
-                Console.WriteLine("d) ");
-                Console.WriteLine("e) ");
-                Console.WriteLine("f) ");
+                Console.WriteLine("d) Delete Monster");
+                Console.WriteLine("e) Update Monster");
+                Console.WriteLine("f) Write to Data File");
                 Console.WriteLine("q) Quit");
                 Console.Write("Enter Choice:");
                 menuChoice = Console.ReadLine().ToLower();
@@ -83,7 +190,7 @@ namespace Monsters
                         break;
 
                     case "b":
-                        DisplayViewMonster(monsters);
+                        DisplayViewMonsterDetail(monsters);
                         break;
 
                     case "c":
@@ -91,15 +198,15 @@ namespace Monsters
                         break;
 
                     case "d":
-
+                        DisplayDeleteMonster(monsters);
                         break;
 
                     case "e":
-
+                        DisplayUpdateMonster(monsters);
                         break;
 
                     case "f":
-
+                        WriteToDataFile(monsters);
                         break;
 
                     case "q":
@@ -117,47 +224,204 @@ namespace Monsters
             } while (!quitApplication);
         }
 
-        static void DisplayViewMonster(List<Monster> monsters)
+        static void DisplayWriteToFile(List<Monster> monsters) 
         {
+            DisplayScreenHeader("Write to Data File");
+
+            // prompt the user to proceed or cancel
+            DisplayContinuePrompt();
+
+            WriteToDataFile(monsters);
+
+            // process the exceptions
+            Console.WriteLine();
+            Console.WriteLine("Data written to file correctly.");
+            DisplayContinuePrompt();
+        }
+
+        static void DisplayUpdateMonster(List<Monster> monsters)
+        {
+            bool validResponse = false;
+            Monster selectedMonster = null;
+
+            do
+            {
+                DisplayScreenHeader("Update Monster");
+
+                //
+                // display all monster names
+                //
+                Console.WriteLine("\tMonster Names");
+                Console.WriteLine("\t-------------");
+                foreach (Monster monster in monsters)
+                {
+                    Console.WriteLine("\t" + monster.Name);
+                }
+
+                //
+                // get user monster choice
+                //
+                Console.WriteLine();
+                Console.Write("\tEnter name:");
+                string monsterName = Console.ReadLine();
+
+                //
+                // get monster object
+                //
+
+                foreach (Monster monster in monsters)
+                {
+                    if (monster.Name == monsterName)
+                    {
+                        selectedMonster = monster;
+                        validResponse = true;
+                        break;
+                    }
+                }
+
+                //
+                // feedback for wrong name choice
+                //
+                if (!validResponse)
+                {
+                    Console.WriteLine("\tPlease select a correct name.");
+                    DisplayContinuePrompt();
+                }
+
+                //
+                // update monster
+                //
+
+
+            } while (!validResponse);
+
+
+            //
+            // updata monster
+            //
+            string userResponse;
+            Console.WriteLine("\tReading to update. Press enter to keep the current info.");
+            Console.Write($"\tCurrent Name: {selectedMonster.Name} New Name: ");
+            userResponse = Console.ReadLine();
+            if (userResponse != "")
+            {
+                selectedMonster.Name = userResponse;
+            }
+
+            Console.Write($"\tCurrent Age: {selectedMonster.Age} New Age: ");
+            userResponse = Console.ReadLine();
+            if (userResponse != "")
+            {
+                int.TryParse(userResponse, out int age);
+                selectedMonster.Age = age;
+            }
+
+            Console.Write($"\tCurrent Attitude: {selectedMonster.Attitude} New Attitude: ");
+            userResponse = Console.ReadLine();
+            if (userResponse != "")
+            {
+                Enum.TryParse(userResponse, out Monster.EmotionalState attitude);
+                selectedMonster.Attitude = attitude;
+            }
+
+
+
+            DisplayContinuePrompt();
+        }
+
+        static void DisplayDeleteMonster(List<Monster> monsters)
+        {
+            DisplayScreenHeader("Delete Monster");
+
             //
             // display all monster names
             //
-            DisplayScreenHeader("Monster Detail");
-            foreach (var monster in monsters)
+            Console.WriteLine("\tMonster Names");
+            Console.WriteLine("\t-------------");
+            foreach (Monster monster in monsters)
             {
-                Console.WriteLine($"\tSelect a monster: {monster.Name}");
+                Console.WriteLine("\t" + monster.Name);
             }
 
             //
-            // ask user for name to display
+            // get user monster choice
             //
-            Console.Write("Which monster's information would you like to display?: ");
-            string userResponse = Console.ReadLine();
+            Console.WriteLine();
+            Console.Write("\tEnter name:");
+            string monsterName = Console.ReadLine();
 
-            DisplayContinuePrompt();
-
             //
-            // find monster with that name
+            // get monster object
             //
-            Monster selectedMonster = monsters.Find(a => a.Name.Contains(userResponse));          // same as the foreach below
-            
-            /*
             Monster selectedMonster = null;
             foreach (Monster monster in monsters)
             {
-                if (monster.Name == userResponse)
+                if (monster.Name == monsterName)
                 {
                     selectedMonster = monster;
                     break;
                 }
-            } 
-            */
+            }
 
             //
-            // display monster's details
+            // delete monster
             //
-            DisplayScreenHeader($"{selectedMonster.Name} Monster Details");
+            if (selectedMonster != null)
+            {
+                monsters.Remove(selectedMonster);
+                Console.WriteLine();
+                Console.WriteLine($"\t{selectedMonster.Name} deleted");
+            }
+            else
+            {
+                Console.WriteLine();
+                Console.WriteLine($"\t{monsterName} not found");
+            }
+
+            DisplayContinuePrompt();
+        }
+
+        static void DisplayViewMonsterDetail(List<Monster> monsters)
+        {
+            DisplayScreenHeader("Monster Detail");
+
+            //
+            // display all monster names
+            //
+            Console.WriteLine("\tMonster Names");
+            Console.WriteLine("\t-------------");
+            foreach (Monster monster in monsters)
+            {
+                Console.WriteLine("\t" + monster.Name);
+            }
+
+            //
+            // get user monster choice
+            //
+            Console.WriteLine();
+            Console.Write("\tEnter name:");
+            string monsterName = Console.ReadLine();
+
+            //
+            // get monster object
+            //
+            Monster selectedMonster = null;
+            foreach (Monster monster in monsters)
+            {
+                if (monster.Name == monsterName)
+                {
+                    selectedMonster = monster;
+                    break;
+                }
+            }
+
+            //
+            // display monster detail
+            //
+            Console.WriteLine();
+            Console.WriteLine("\t*********************");
             MonsterInfo(selectedMonster);
+            Console.WriteLine("\t*********************");
 
             DisplayContinuePrompt();
         }
@@ -168,49 +432,49 @@ namespace Monsters
 
             DisplayScreenHeader("Add Monster");
 
+            //
+            // add monster object property values
+            //
             Console.Write("\tName: ");
             newMonster.Name = Console.ReadLine();
-
             Console.Write("\tAge: ");
             int.TryParse(Console.ReadLine(), out int age);
             newMonster.Age = age;
-
             Console.Write("\tAttitude: ");
             Enum.TryParse(Console.ReadLine(), out Monster.EmotionalState attitude);
             newMonster.Attitude = attitude;
 
             //
-            // echo monster properties
+            // echo new monster properties
             //
-            Console.WriteLine();
-            Console.WriteLine("\tMonster Properties");
-            Console.WriteLine("*********************");
+            Console.WriteLine("\tNew Monster's Properties");
             MonsterInfo(newMonster);
-
             DisplayContinuePrompt();
 
             monsters.Add(newMonster);
         }
 
-        static void MonsterInfo(Monster monster)
-        {
-                Console.WriteLine($"\tName: {monster.Name}");
-                Console.WriteLine($"\tAge: {monster.Age}");
-                Console.WriteLine($"\tAttitude: {monster.Attitude}");
-        }
-
         static void DisplayAllMonsters(List<Monster> monsters)
         {
             DisplayScreenHeader("All Monsters");
-            Console.WriteLine("***************************************");
+
+            Console.WriteLine("\t***************************");
             foreach (Monster monster in monsters)
             {
                 MonsterInfo(monster);
                 Console.WriteLine();
-                Console.WriteLine("***************************************");
+                Console.WriteLine("\t***************************");
             }
 
             DisplayContinuePrompt();
+        }
+
+        static void MonsterInfo(Monster monster)
+        {
+            Console.WriteLine($"\tName: {monster.Name}");
+            Console.WriteLine($"\tAge: {monster.Age}");
+            Console.WriteLine($"\tAttitude: {monster.Attitude}");
+            Console.WriteLine($"\t" + monster.Greeting());
         }
 
         #region HELPER METHODS

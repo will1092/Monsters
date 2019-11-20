@@ -1,0 +1,2 @@
+Sid,100,happy
+Fred,99,bored

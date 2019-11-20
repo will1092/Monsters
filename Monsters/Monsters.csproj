@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{EFF066EA-196B-4A23-8DF6-51862989E9AC}</ProjectGuid>
+    <ProjectGuid>{D9B2570E-E056-4B63-80AB-2B5E1EB00200}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Monsters</RootNamespace>
     <AssemblyName>Monsters</AssemblyName>
@@ -49,6 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Data\Data.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

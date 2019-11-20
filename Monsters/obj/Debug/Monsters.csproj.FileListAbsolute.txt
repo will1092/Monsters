@@ -1,0 +1,14 @@
+C:\Users\velisj\Desktop\Monsters\Monsters\bin\Debug\Monsters.exe.config
+C:\Users\velisj\Desktop\Monsters\Monsters\bin\Debug\Monsters.exe
+C:\Users\velisj\Desktop\Monsters\Monsters\bin\Debug\Monsters.pdb
+C:\Users\velisj\Desktop\Monsters\Monsters\obj\Debug\Monsters.csprojAssemblyReference.cache
+C:\Users\velisj\Desktop\Monsters\Monsters\obj\Debug\Monsters.csproj.CoreCompileInputs.cache
+C:\Users\velisj\Desktop\Monsters\Monsters\obj\Debug\Monsters.exe
+C:\Users\velisj\Desktop\Monsters\Monsters\obj\Debug\Monsters.pdb
+C:\Users\cody_\Downloads\Monsters\Monsters\Monsters\obj\Debug\Monsters.csprojAssemblyReference.cache
+C:\Users\cody_\Downloads\Monsters\Monsters\Monsters\obj\Debug\Monsters.exe
+C:\Users\cody_\Downloads\Monsters\Monsters\Monsters\obj\Debug\Monsters.pdb
+C:\Users\cody_\Downloads\Monsters\Monsters\Monsters\bin\Debug\Monsters.exe.config
+C:\Users\cody_\Downloads\Monsters\Monsters\Monsters\bin\Debug\Monsters.exe
+C:\Users\cody_\Downloads\Monsters\Monsters\Monsters\bin\Debug\Monsters.pdb
+C:\Users\cody_\Downloads\Monsters\Monsters\Monsters\bin\Debug\Data\Data.txt
