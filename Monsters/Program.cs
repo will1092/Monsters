@@ -176,6 +176,7 @@ namespace Monsters
                 Console.WriteLine("d) Delete Monster");
                 Console.WriteLine("e) Update Monster");
                 Console.WriteLine("f) Write to Data File");
+                Console.WriteLine("g) Filter by Attitude");
                 Console.WriteLine("q) Quit");
                 Console.Write("Enter Choice:");
                 menuChoice = Console.ReadLine().ToLower();
@@ -209,6 +210,10 @@ namespace Monsters
                         WriteToDataFile(monsters);
                         break;
 
+                    case "g":
+                        DisplayFilterByAttitude(monsters);
+                        break;
+
                     case "q":
                         quitApplication = true;
                         break;
@@ -222,6 +227,44 @@ namespace Monsters
 
 
             } while (!quitApplication);
+        }
+
+        static void DisplayFilterByAttitude(List<Monster> monsters)
+        {
+            List<Monster> filteredMonsters = new List<Monster>();
+            Monster.EmotionalState selectedAttitude = Monster.EmotionalState.happy;
+
+            DisplayScreenHeader("Filter by Attitude");
+
+            //
+            // add monsters with the selected attitude to a new list
+            //
+            //foreach (Monster monster in monsters)
+            //{
+            //    if (monster.Attitude == selectedAttitude)
+            //    {
+            //        filteredMonsters.Add(monster);
+            //    }
+            //}
+
+            //
+            // LINQ examples
+            //
+            filteredMonsters = monsters.Where(m => m.Attitude == selectedAttitude).ToList();
+            filteredMonsters = filteredMonsters.OrderBy(m => m.Name).ToList();
+
+            //
+            // display new list
+            //
+            Console.WriteLine($"{selectedAttitude} Monsters");
+            Console.WriteLine("\t***************************");
+            foreach (Monster monster in filteredMonsters)
+            {
+                MonsterInfo(monster);
+                Console.WriteLine();
+            }
+
+            DisplayContinuePrompt();
         }
 
         static void DisplayWriteToFile(List<Monster> monsters) 

@@ -1,2 +1,6 @@
-Sid,100,happy
+﻿Sid,44,happy
+Lucy,33,sad
 Fred,99,bored
+Tim,25,happy
+Sheldon,64,happy
+Alex,500,happy
